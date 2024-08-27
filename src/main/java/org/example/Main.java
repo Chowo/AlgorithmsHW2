@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
-        int size = 100000;
+        int size = 100;
         Integer[] list = new Integer[size];
         Random random = new Random();
         for (int i = 0; i < list.length; i++) {
@@ -14,6 +14,7 @@ public class Main {
         Integer[] sort1List = Arrays.copyOf(list, size);
         Integer[] sort2List = Arrays.copyOf(list, size);
         Integer[] sort3List = Arrays.copyOf(list, size);
+        Integer[] sort4List = Arrays.copyOf(list, size);
 
         long start1 = System.currentTimeMillis();
         IntegerList.bubbleSort(sort1List);
@@ -27,6 +28,10 @@ public class Main {
         IntegerList.insertionSort(sort3List);
         System.out.println("Insertion sort time: " + (System.currentTimeMillis() - start3));
 
+        long start4 = System.currentTimeMillis();
+        IntegerList.quickSort(sort4List,0, sort4List.length-1);
+        System.out.println("Quick sort time: " + (System.currentTimeMillis() - start4));
+
         for (Integer integer : sort1List) {
             System.out.print(integer + ", ");
         }
@@ -35,7 +40,13 @@ public class Main {
             System.out.print(integer + ", ");
         }
         System.out.println();
-        for (Integer integer : sort2List) {
+
+        for (Integer integer : sort3List) {
+            System.out.print(integer + ", ");
+        }
+        System.out.println();
+
+        for (Integer integer : sort4List) {
             System.out.print(integer + ", ");
         }
         System.out.println();

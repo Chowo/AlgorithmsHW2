@@ -20,7 +20,7 @@ public class IntegerList implements IntegerListInterface {
             list[0] = item;
         } else {
             if (list[list.length - 1] != null) {
-                list = makeBiggerList();
+                list = grow();
             }
         }
         for (int i = 0; i < listSize + 1; i++) {
@@ -31,8 +31,9 @@ public class IntegerList implements IntegerListInterface {
         return item;
     }
 
-    private Integer[] makeBiggerList() {
-        Integer[] biggerList = new Integer[list.length * 2];
+    private Integer[] grow() {
+        int newLength = (int) (list.length * 1.5);
+        Integer[] biggerList = new Integer[newLength];
         System.arraycopy(list, 0, biggerList, 0, list.length);
         return biggerList;
     }
@@ -45,7 +46,7 @@ public class IntegerList implements IntegerListInterface {
         } else {
             Integer[] tmp;
             if (list[list.length - 1] != null) {
-                tmp = makeBiggerList();
+                tmp = grow();
             } else {
                 tmp = list;
             }
@@ -116,7 +117,7 @@ public class IntegerList implements IntegerListInterface {
     @Override
     public boolean contains(Integer item) {
         Integer[] sortedList = Arrays.copyOf(list, trimNullsInList(list).length);
-        selectionSort(sortedList);
+        quickSort(sortedList, 0, sortedList.length-1);
         if (binarySearch(list, item) == -1) {
             return false;
         } else {
@@ -249,6 +250,30 @@ public class IntegerList implements IntegerListInterface {
             }
             array[j] = temp;
         }
+    }
+
+    public static void quickSort(Integer[] array, int begin, int end) {
+        if (begin < end) {
+            int separatorIndex = separate(array, begin, end);
+
+            quickSort(array, begin, separatorIndex - 1);
+            quickSort(array, separatorIndex +1, end);
+
+        }
+    }
+
+    private static int separate(Integer[] array, int begin, int end) {
+        int pivot = array[end];
+        int i = begin - 1;
+
+        for (int j = begin; j < end; j++) {
+            if (array[j] <= pivot) {
+                i++;
+                swapElements(array, i, j);
+            }
+        }
+        swapElements(array, i + 1, end);
+        return i + 1;
     }
 
     private static int binarySearch(Integer[] array, Integer item) {
