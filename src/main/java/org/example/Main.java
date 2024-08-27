@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
-        int size = 100;
+        int size = 100000;
         Integer[] list = new Integer[size];
         Random random = new Random();
         for (int i = 0; i < list.length; i++) {
