@@ -1,18 +1,20 @@
 package org.example;
 
 import org.example.exceptions.IndexIsOutOfBoundsException;
-import org.example.exceptions.NoSuchStringException;
+import org.example.exceptions.NoSuchIntegerException;
 import org.example.exceptions.NullListException;
 
-public class StringList implements StringListInterface {
-    private String[] list;
+import java.util.Arrays;
 
-    public StringList() {
-        list = new String[5];
+public class IntegerList implements IntegerListInterface {
+    private Integer[] list;
+
+    public IntegerList() {
+        list = new Integer[5];
     }
 
     @Override
-    public String add(String item) {
+    public Integer add(Integer item) {
         int listSize = trimNullsInList(list).length;
         if (listSize == 0) {
             list[0] = item;
@@ -29,27 +31,27 @@ public class StringList implements StringListInterface {
         return item;
     }
 
-    private String[] makeBiggerList() {
-        String[] biggerList = new String[list.length * 2];
+    private Integer[] makeBiggerList() {
+        Integer[] biggerList = new Integer[list.length * 2];
         System.arraycopy(list, 0, biggerList, 0, list.length);
         return biggerList;
     }
 
     @Override
-    public String add(int index, String item) {
+    public Integer add(int index, Integer item) {
         int listSize = trimNullsInList(list).length;
         if (index > listSize || index < 0) {
             throw new IndexIsOutOfBoundsException(index);
         } else {
-            String[] tmp;
+            Integer[] tmp;
             if (list[list.length - 1] != null) {
                 tmp = makeBiggerList();
             } else {
                 tmp = list;
             }
 
-            String tmpString1 = list[index];
-            String tmpString2 = tmpString1;
+            Integer tmpString1 = list[index];
+            Integer tmpString2 = tmpString1;
             for (int j = index; j < listSize + 1; j++) {
                 if (j > index) {
                     tmpString2 = tmp[j];
@@ -67,7 +69,7 @@ public class StringList implements StringListInterface {
     }
 
     @Override
-    public String set(int index, String item) {
+    public Integer set(int index, Integer item) {
         if (index >= list.length || index < 0 || list[index] == null) {
             throw new IndexIsOutOfBoundsException(index);
         } else {
@@ -77,9 +79,9 @@ public class StringList implements StringListInterface {
     }
 
     @Override
-    public String remove(String item) {
+    public Integer remove(Integer item) {
         int listSize = trimNullsInList(list).length;
-        String tmp = null;
+        Integer tmp = null;
         for (int i = 0; i < listSize; i++) {
             if (list[i].equals(item)) {
                 tmp = list[i];
@@ -90,15 +92,15 @@ public class StringList implements StringListInterface {
         }
         list[listSize - 1] = null;
         if (tmp == null) {
-            throw new NoSuchStringException(item);
+            throw new NoSuchIntegerException(item);
         }
         return tmp;
     }
 
     @Override
-    public String remove(int index) {
+    public Integer remove(int index) {
         int listSize = trimNullsInList(list).length;
-        String removableItem;
+        Integer removableItem;
         if ((index >= list.length) || (index < 0) || (list[index] == null)) {
             throw new IndexIsOutOfBoundsException(index);
         } else {
@@ -112,17 +114,18 @@ public class StringList implements StringListInterface {
     }
 
     @Override
-    public boolean contains(String item) {
-        for (int i = 0; i < list.length; i++) {
-            if (list[i].equals(item)) {
-                return true;
-            }
+    public boolean contains(Integer item) {
+        Integer[] sortedList = Arrays.copyOf(list, trimNullsInList(list).length);
+        selectionSort(sortedList);
+        if (binarySearch(list, item) == -1) {
+            return false;
+        } else {
+            return true;
         }
-        return false;
     }
 
     @Override
-    public int indexOf(String item) {
+    public int indexOf(Integer item) {
         for (int i = 0; i < list.length; i++) {
             if (list[i].equals(item)) {
                 return i;
@@ -132,7 +135,7 @@ public class StringList implements StringListInterface {
     }
 
     @Override
-    public int lastIndexOf(String item) {
+    public int lastIndexOf(Integer item) {
         for (int i = list.length - 1; i >= 0; i--) {
             if (list[i].equals(item)) {
                 return i;
@@ -142,7 +145,7 @@ public class StringList implements StringListInterface {
     }
 
     @Override
-    public String get(int index) {
+    public Integer get(int index) {
         if (index >= list.length || index < 0) {
             throw new IndexIsOutOfBoundsException(index);
         }
@@ -150,17 +153,17 @@ public class StringList implements StringListInterface {
     }
 
     @Override
-    public boolean equals(StringList otherList) {
+    public boolean equals(IntegerList otherList) {
         if (otherList == null) {
             throw new NullListException();
         }
         boolean equals = false;
-        String[] tmp = trimNullsInList(list);
-        if (tmp == otherList.toArray()) {
+        Integer[] tmp = trimNullsInList(list);
+        if (otherList.toArray() == tmp) {
             return true;
-        } else if (tmp.length == otherList.toArray().length) {
+        } else if (otherList.toArray().length == tmp.length) {
             for (int i = 0; i < tmp.length; i++) {
-                if (!tmp[i].equals(otherList.toArray()[i])) {
+                if (otherList.toArray()[i] != tmp[i]) {
                     equals = false;
                     break;
                 } else {
@@ -171,14 +174,14 @@ public class StringList implements StringListInterface {
         return equals;
     }
 
-    private String[] trimNullsInList(String[] listToTrim) {
+    private Integer[] trimNullsInList(Integer[] listToTrim) {
         int newLength = 0;
-        for (String s : listToTrim) {
+        for (Integer s : listToTrim) {
             if (s != null) {
                 newLength++;
             }
         }
-        String[] trimmedList = new String[newLength];
+        Integer[] trimmedList = new Integer[newLength];
         for (int i = 0; i < listToTrim.length; i++) {
             if (list[i] == null) {
                 break;
@@ -201,11 +204,69 @@ public class StringList implements StringListInterface {
 
     @Override
     public void clear() {
-        list = new String[5];
+        list = new Integer[5];
     }
 
     @Override
-    public String[] toArray() {
+    public Integer[] toArray() {
         return trimNullsInList(list);
     }
+
+    private static void swapElements(Integer[] array, int index1, int index2) {
+        int tmp = array[index1];
+        array[index1] = array[index2];
+        array[index2] = tmp;
+    }
+
+    public static void selectionSort(Integer[] array) {
+        for (int i = 0; i < array.length - 1; i++) {
+            int minIndex = i;
+            for (int j = i + 1; j < array.length; j++) {
+                if (array[j] < array[minIndex]) {
+                    minIndex = j;
+                }
+            }
+            swapElements(array, i, minIndex);
+        }
+    }
+
+    public static void bubbleSort(Integer[] array) {
+        for (int i = 0; i < array.length - 1; i++) {
+            for (int j = 0; j < array.length - 1 - i; j++) {
+                if (array[j] < array[j + 1]) {
+                    swapElements(array, j, j + 1);
+                }
+            }
+        }
+    }
+
+    public static void insertionSort(Integer[] array) {
+        for (int i = 1; i < array.length; i++) {
+            int temp = array[i];
+            int j = i;
+            for (; j >0 && array[j-1] >= temp; j--) {
+                array[j] = array[j-1];
+            }
+            array[j] = temp;
+        }
+    }
+
+    private static int binarySearch(Integer[] array, Integer item) {
+        int min = 0;
+        int max = array.length - 1;
+        while (min <= max) {
+            int mid = (min + max) / 2;
+            if (item == array[mid]) {
+                return mid;
+            }
+            if (item < array[mid]) {
+                max = mid - 1;
+            } else {
+                min = mid + 1;
+            }
+        }
+        return -1;
+
+    }
+
 }
